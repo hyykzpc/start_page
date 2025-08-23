@@ -1,0 +1,24 @@
+[
+  { "type": "drawer", "target": "drawer1", "left": "45%" },
+  { "type": "drawer", "target": "drawer2", "left": "58%" },
+  { "type": "drawer", "target": "drawer3", "left": "68%" },
+  { 
+    "type": "audio", 
+    "src": "audio1.mp3", 
+    "left": "47%", 
+    "width": "70px", 
+    "height": "50px", 
+    "top": "10%" 
+  },
+  { 
+    "type": "bili", 
+    "url": "https://www.bilibili.com", 
+    "left": "35%" 
+  },
+  { 
+    "type": "music", 
+    "src": "audio2.mp3", 
+    "left": "21%" 
+  }
+
+]
