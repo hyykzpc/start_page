@@ -1,23 +1,35 @@
+html{
+  height:100%
+}
+
 body {
-  height: 100vh;
-  background-image: url("bg.jpg");
-  background-position: center bottom;
-  background-size: 70%;
-  background-repeat: no-repeat;
+  height: 100%;
   background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 0px;
+  margin:0px;
   position: relative;
   overflow-x: hidden;
 }
+.bg-container{
+  position: relative;
+  margin-top: auto;
+  border: 3px solid black;
+  height:70%;
+  width:auto;
+}
 
+.bg-img{
+  height:100%;
+  width:auto;
+}
 .a486 {
-  width: 80px;
+  width: 8vh;
   height: auto;
   position: absolute;
-  bottom: 82%;
+  bottom: 81.5%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -53,7 +65,7 @@ body {
   position: absolute;
   bottom: 0;
   background-color: transparent;
-  border: none;
+  border: 3px solid blue;
   cursor: pointer;
 }
 

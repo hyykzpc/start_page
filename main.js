@@ -2,7 +2,7 @@
 fetch("triggers.json")
   .then(response => response.json())
   .then(triggersConfig => {
-    const container = document.body;
+    const container = document.querySelector('.bg-container');
 
     // 创建触发区域
     triggersConfig.forEach(cfg => {
