@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>音频频谱可视化优化</title>
+<style>
+  body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  canvas {
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    background-color: #111;
+  }
+</style>
+</head>
+<body>
+
+<h2>音频频谱可视化</h2>
+<audio id="player" controls src="audio2.mp3"></audio>
+<canvas id="visualizer" width="800" height="200"></canvas>
+
+<script>
+const audio = document.getElementById('player');
+const canvas = document.getElementById('visualizer');
+const ctx = canvas.getContext('2d');
+
+// 创建音频上下文
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+analyser.fftSize = 128; // FFT 点数小，柱子少
+const source = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+
+const bufferLength = analyser.frequencyBinCount; // frequencyBinCount = fftSize/2
+const dataArray = new Uint8Array(bufferLength);
+
+// 绘制函数
+function draw() {
+  requestAnimationFrame(draw);
+  analyser.getByteFrequencyData(dataArray);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const barCount = bufferLength; // 16 根柱子
+  const barWidth = 4;           // 宽柱子
+  const gap = 10;                // 间距
+  let x = 0;
+
+  for(let i = 0; i < barCount; i++){
+    // 非线性缩放，让高低差距更明显
+    const normalized = dataArray[i] / 255;
+    const barHeight = Math.pow(normalized, 1.5) * canvas.height;
+
+    const red = Math.min(barHeight + 50, 255);
+    const green = 50;
+    const blue = Math.max(200 - barHeight, 0);
+    ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+
+    const radius = 5;
+    ctx.beginPath();
+    ctx.moveTo(x, canvas.height - barHeight + radius);
+    ctx.lineTo(x, canvas.height - radius);
+    ctx.quadraticCurveTo(x, canvas.height, x + radius, canvas.height);
+    ctx.lineTo(x + barWidth - radius, canvas.height);
+    ctx.quadraticCurveTo(x + barWidth, canvas.height, x + barWidth, canvas.height - radius);
+    ctx.lineTo(x + barWidth, canvas.height - barHeight + radius);
+    ctx.quadraticCurveTo(x + barWidth, canvas.height - barHeight, x + barWidth - radius, canvas.height - barHeight);
+    ctx.lineTo(x + radius, canvas.height - barHeight);
+    ctx.quadraticCurveTo(x, canvas.height - barHeight, x, canvas.height - barHeight + radius);
+    ctx.fill();
+
+    x += barWidth + gap;
+  }
+}
+
+
+// 浏览器策略：需要用户交互才能播放音频
+audio.addEventListener('play', () => {
+  audioCtx.resume().then(() => {
+    draw();
+  });
+});
+</script>
+
+</body>
+</html>

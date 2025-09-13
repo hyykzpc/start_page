@@ -4,6 +4,14 @@ fetch("triggers.json")
   .then(triggersConfig => {
     const container = document.querySelector('.bg-container');
 
+    let songList = [];
+
+    fetch("songs.json")
+      .then(res => res.json())
+      .then(data => {
+        songList = data.songs; // 保存曲库
+      });
+
     // 创建触发区域
     triggersConfig.forEach(cfg => {
       const trigger = document.createElement("div");
@@ -11,11 +19,11 @@ fetch("triggers.json")
       trigger.style.left = cfg.left;
       if (cfg.width) trigger.style.width = cfg.width;
       if (cfg.height) trigger.style.height = cfg.height;
-      if(cfg.top) trigger.style.top = cfg.top;
+      if (cfg.top) trigger.style.top = cfg.top;
 
       trigger.dataset.type = cfg.type;
-      if(cfg.target) trigger.dataset.target = cfg.target;
-      if(cfg.message) trigger.dataset.message = cfg.message;
+      if (cfg.target) trigger.dataset.target = cfg.target;
+      if (cfg.message) trigger.dataset.message = cfg.message;
 
       container.appendChild(trigger);
     });
@@ -28,7 +36,7 @@ fetch("triggers.json")
         e.stopPropagation();
         const type = trigger.dataset.type;
 
-        switch(type) {
+        switch (type) {
           case "drawer":
             drawers.forEach(d => d.classList.remove('open'));
             document.getElementById(trigger.dataset.target)?.classList.toggle('open');
@@ -40,8 +48,26 @@ fetch("triggers.json")
             window.open("https://www.bilibili.com", "_blank");
             break;
           case "music":
-            playAudio(trigger.dataset.message || "audio2.mp3");
+            if (!player.paused) {
+              // 如果正在播放 → 停止
+              player.pause();
+              player.currentTime = 0;
+              console.log("音乐已停止");
+            } else {
+              // 如果没有播放 → 随机抽一首来播
+              if (songList.length > 0) {
+                const randomIndex = Math.floor(Math.random() * songList.length);
+                const randomSong = songList[randomIndex];
+                playAudio(randomSong);
+                console.log("播放随机歌曲:", randomSong);
+              } else {
+                console.warn("曲库未加载或为空，播放默认歌曲");
+                playAudio("audio2.mp3");
+              }
+            }
             break;
+
+
         }
       });
     });
@@ -82,7 +108,7 @@ function renderDrawer(drawerId) {
   const drawer = document.getElementById(drawerId);
   let container = drawer.querySelector(".square-container");
 
-  if(!container){
+  if (!container) {
     container = document.createElement("div");
     container.className = "square-container";
     container.style.display = "grid";
@@ -96,14 +122,14 @@ function renderDrawer(drawerId) {
 
   const sites = drawersData[drawerId];
 
-  for(let i=0; i<32; i++){
+  for (let i = 0; i < 32; i++) {
     const btnWrapper = document.createElement("div");
     btnWrapper.style.position = "relative";
     btnWrapper.style.display = "flex";
     btnWrapper.style.flexDirection = "column";
     btnWrapper.style.alignItems = "center";
 
-    if(i < sites.length){
+    if (i < sites.length) {
       const site = sites[i];
       const btn = document.createElement("div");
       btn.className = "square-btn";
@@ -118,12 +144,12 @@ function renderDrawer(drawerId) {
       btn.style.cursor = "pointer";
 
       const img = document.createElement("img");
-      try{
+      try {
         img.src = `https://www.google.com/s2/favicons?domain=${new URL(site.url).hostname}`;
-      }catch(e){ img.src = ""; }
+      } catch (e) { img.src = ""; }
       btn.appendChild(img);
 
-      btn.addEventListener("click", ()=>window.open(site.url, "_blank"));
+      btn.addEventListener("click", () => window.open(site.url, "_blank"));
 
       const del = document.createElement("div");
       del.className = "delete-btn";
@@ -135,12 +161,12 @@ function renderDrawer(drawerId) {
       del.style.display = "none";
       btn.appendChild(del);
 
-      btn.addEventListener("mouseenter", ()=>del.style.display="block");
-      btn.addEventListener("mouseleave", ()=>del.style.display="none");
+      btn.addEventListener("mouseenter", () => del.style.display = "block");
+      btn.addEventListener("mouseleave", () => del.style.display = "none");
 
-      del.addEventListener("click", e=>{
+      del.addEventListener("click", e => {
         e.stopPropagation();
-        sites.splice(i,1);
+        sites.splice(i, 1);
         saveData();
         renderDrawer(drawerId);
       });
@@ -155,7 +181,7 @@ function renderDrawer(drawerId) {
       btnWrapper.appendChild(label);
       container.appendChild(btnWrapper);
 
-    } else if(i === sites.length){
+    } else if (i === sites.length) {
       const btn = document.createElement("div");
       btn.className = "square-btn add-btn";
       btn.style.width = "100%";
@@ -168,7 +194,7 @@ function renderDrawer(drawerId) {
       btn.style.cursor = "pointer";
       btn.textContent = "+";
 
-      btn.addEventListener("click", ()=>showInputPopup(btn, drawerId));
+      btn.addEventListener("click", () => showInputPopup(btn, drawerId));
 
       btnWrapper.appendChild(btn);
       container.appendChild(btnWrapper);
@@ -181,7 +207,7 @@ function renderDrawer(drawerId) {
 }
 
 // ----------------- 弹出输入框添加网站 -----------------
-function showInputPopup(targetBtn, drawerId){
+function showInputPopup(targetBtn, drawerId) {
   const popup = document.createElement("div");
   popup.className = "input-popup";
   popup.style.position = "absolute";
@@ -198,35 +224,35 @@ function showInputPopup(targetBtn, drawerId){
   `;
   document.body.appendChild(popup);
 
-  popup.addEventListener("click", e=>e.stopPropagation());
+  popup.addEventListener("click", e => e.stopPropagation());
 
   const rect = targetBtn.getBoundingClientRect();
   popup.style.top = `${rect.bottom + window.scrollY}px`;
   popup.style.left = `${rect.left + window.scrollX}px`;
 
-  popup.querySelector("button").addEventListener("click", ()=>{
+  popup.querySelector("button").addEventListener("click", () => {
     const name = popup.querySelector(".site-name").value.trim();
     let url = popup.querySelector(".site-url").value.trim();
-    if(!name || !url) return alert("名称和网址不能为空");
-    if(!/^https?:\/\//.test(url)) url = "https://" + url;
+    if (!name || !url) return alert("名称和网址不能为空");
+    if (!/^https?:\/\//.test(url)) url = "https://" + url;
 
-    drawersData[drawerId].push({name, url});
+    drawersData[drawerId].push({ name, url });
     saveData();
     renderDrawer(drawerId);
     document.body.removeChild(popup);
   });
 
-  const closePopup = e=>{
-    if(!popup.contains(e.target)){
+  const closePopup = e => {
+    if (!popup.contains(e.target)) {
       document.body.removeChild(popup);
       document.removeEventListener("click", closePopup);
     }
   };
-  setTimeout(()=>document.addEventListener("click", closePopup), 0);
+  setTimeout(() => document.addEventListener("click", closePopup), 0);
 }
 const searchInput = document.querySelector(".search");
 
-searchInput.addEventListener("keydown", function(e) {
+searchInput.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {       // 按下回车
     const query = searchInput.value.trim();
     if (query) {
@@ -238,4 +264,4 @@ searchInput.addEventListener("keydown", function(e) {
   }
 });
 // ----------------- 初始化渲染抽屉 -----------------
-["drawer1","drawer2","drawer3"].forEach(renderDrawer);
+["drawer1", "drawer2", "drawer3"].forEach(renderDrawer);

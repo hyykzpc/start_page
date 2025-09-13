@@ -16,6 +16,7 @@ body {
 .bg-container{
   position: relative;
   margin-top: auto;
+  border: 3px solid white;
   height:70%;
   width:auto;
 }
@@ -35,6 +36,7 @@ body {
 
 .box {
   display: flex;
+  border: 5px solid black;
   margin: auto;
   border-radius: 25px;
   overflow: hidden;
@@ -63,7 +65,6 @@ body {
   position: absolute;
   bottom: 0;
   background-color: transparent;
-  border: 3px solid blue;
   cursor: pointer;
 }
 
@@ -215,4 +216,3 @@ body {
   padding: 5px;
   cursor: pointer;
 }
-
