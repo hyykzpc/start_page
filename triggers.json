@@ -7,15 +7,15 @@
     "height":"100%"
   },
   {
-    "type": "drawer",
-    "target": "drawer2",
+    "type": "AI",
+    "url":"https://www.chatgpt.com",
     "left": "60%",
     "width":"12%",
     "height":"100%"
   },
   {
-    "type": "drawer",
-    "target": "drawer3",
+    "type": "GIT",
+    "url":"https://www.github.com",
     "left": "75%",
     "width":"13%",
     "height":"100%"

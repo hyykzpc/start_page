@@ -41,11 +41,14 @@ fetch("triggers.json")
             drawers.forEach(d => d.classList.remove('open'));
             document.getElementById(trigger.dataset.target)?.classList.toggle('open');
             break;
-          case "audio":
-            playAudio(trigger.dataset.message || "audio1.mp3");
-            break;
           case "bili":
             window.open("https://www.bilibili.com", "_blank");
+            break;
+          case "AI":
+            window.open("https://www.chatgpt.com", "_blank")
+            break;
+          case "GIT":
+            window.open("https://www.github.com", "_blank")
             break;
           case "music":
             if (!player.paused) {
@@ -66,8 +69,6 @@ fetch("triggers.json")
               }
             }
             break;
-
-
         }
       });
     });
@@ -264,4 +265,4 @@ searchInput.addEventListener("keydown", function (e) {
   }
 });
 // ----------------- 初始化渲染抽屉 -----------------
-["drawer1", "drawer2", "drawer3"].forEach(renderDrawer);
+["drawer1"].forEach(renderDrawer);
