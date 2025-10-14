@@ -42,13 +42,13 @@ fetch("triggers.json")
             document.getElementById(trigger.dataset.target)?.classList.toggle('open');
             break;
           case "bili":
-            window.open("https://www.bilibili.com", "_blank");
+            window.open("https://www.bilibili.com", "_self","noopener noreferrer");
             break;
           case "AI":
-            window.open("https://www.chatgpt.com", "_blank")
+            window.open("https://www.chatgpt.com", "_self","noopener noreferrer");
             break;
           case "GIT":
-            window.open("https://www.github.com", "_blank")
+            window.open("https://www.github.com", "_self","noopener noreferrer");
             break;
           case "music":
             if (!player.paused) {
