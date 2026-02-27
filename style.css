@@ -12,19 +12,31 @@ body {
   margin:0px;
   position: relative;
   overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+/* 背景图片容器 */
 .bg-container{
-  position: relative;
-  margin-top: auto;
-  border: 3px solid white;
-  height:70%;
-  width:auto;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 70%;
+  width: auto;
+  z-index: 1;
 }
 
 .bg-img{
-  height:100%;
-  width:auto;
+  height: 100%;
+  width: auto;
+  transition: transform 0.5s ease;
+  transform-origin: center bottom;
 }
+
+.bg-container:hover .bg-img {
+  transform: scale(1.05);
+}
+
 .a486 {
   width: 8vh;
   height: auto;
@@ -32,13 +44,20 @@ body {
   bottom: 81.5%;
   left: 50%;
   transform: translateX(-50%);
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  z-index: 10;
+}
+
+.a486:hover {
+  transform: translateX(-50%) scale(1.1);
 }
 
 .box {
   display: flex;
-  border: 5px solid black;
+  border: 3px solid #e0e0e0;
   margin: auto;
-  border-radius: 25px;
+  border-radius: 30px;
   overflow: hidden;
   width: 61.8%;
   height: 6.18vh;
@@ -46,6 +65,25 @@ body {
   bottom: 75%;
   left: 0;
   right: 0;
+  background: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.box:hover {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.audio-visualizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .search {
@@ -56,6 +94,20 @@ body {
   box-sizing: border-box;
   text-align: center;
   font-size: x-large;
+  background: transparent;
+  color: #333;
+  z-index: 2;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.search::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.search:focus {
+  font-size: xx-large;
+  letter-spacing: 1px;
 }
 
 /* 触发区域（透明） */
@@ -66,6 +118,13 @@ body {
   bottom: 0;
   background-color: transparent;
   cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  z-index: 5;
+}
+
+.trigger-area:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 抽屉样式 */
@@ -75,14 +134,15 @@ body {
   bottom: -100%; /* 初始隐藏 */
   width: 100%;
   height: 70%;
-  background-color: #f5f5f5;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  transition: bottom 0.5s ease-in-out;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 -8px 25px rgba(0,0,0,0.3);
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  transition: bottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 100;
   padding: 20px;
   overflow: auto;
+  backdrop-filter: blur(10px);
 }
 
 .drawer.open {
@@ -90,17 +150,24 @@ body {
 }
 
 .drawer .handle {
-  width: 60px;
+  width: 80px;
   height: 6px;
   background-color: #888;
   border-radius: 3px;
-  margin: 0 auto 10px auto;
+  margin: 0 auto 20px auto;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .drawer.open .handle {
   opacity: 1;
+  transform: scaleY(1.2);
+}
+
+.drawer .handle:hover {
+  background-color: #555;
+  transform: scaleX(1.1);
 }
 
 /* 抽屉内部按钮容器 */
@@ -108,8 +175,9 @@ body {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-auto-rows: 1fr;  /* 行高随列宽自适应 */
-  gap: 10px;
-  margin-top: 15px;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 0 10px;
 }
 
 /* 抽屉内部按钮 */
@@ -118,62 +186,79 @@ body {
   width: 100%;
   aspect-ratio: 1 / 1; /* 保持宽高比1:1 */
   border-radius: 50%;   /* 完美圆形 */
-  background-color: #4CAF50;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   overflow: hidden;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #d0d0d0;
 }
 
 .square-btn:hover {
-  transform: scale(1.05);
-  background-color: #45a049;
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+}
+
+.square-btn:active {
+  transform: scale(0.95);
 }
 
 /* 加号按钮样式，和圆形按钮统一 */
 .add-btn {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  color: white;
+  color: #666;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background-color: #eee;
+  background-color: #f9f9f9;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px dashed #999;
 }
 
 .add-btn:hover {
-  transform: scale(1.05);
-  background-color: #ddd;
+  transform: scale(1.1) translateY(-5px);
+  background-color: #f0f0f0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* 删除按钮样式 */
 .delete-btn {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 14px;
+  top: 5px;
+  right: 5px;
+  font-size: 16px;
   color: white;
-  background: rgba(255,0,0,0.8);
-  width: 18px;
-  height: 18px;
+  background: rgba(255, 0, 0, 0.9);
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
 }
 
 .square-btn:hover .delete-btn {
   opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-btn:hover {
+  background: rgba(255, 0, 0, 1);
+  transform: scale(1.2);
 }
 
 /* 图片自适应按钮 */
@@ -181,38 +266,106 @@ body {
   width: 50%;
   height: 50%;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.square-btn:hover img {
+  transform: scale(1.2);
 }
 
 /* 标签文字居中显示，字体加大加粗 */
 .square-label {
   text-align: center;
-  margin-top: 4px;
+  margin-top: 8px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.square-btn:hover + .square-label {
+  color: #667eea;
+  transform: translateY(-2px);
 }
 
 /* 输入弹窗 */
 .input-popup {
   position: absolute;
   background: white;
-  border: 1px solid #888;
-  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
   z-index: 200;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .input-popup input {
-  padding: 3px;
-  font-size: 12px;
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.input-popup input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .input-popup button {
-  padding: 5px;
+  padding: 10px;
   cursor: pointer;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.input-popup button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.input-popup button:active {
+  transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .box {
+    width: 85%;
+    height: 5vh;
+  }
+  
+  .square-container {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  
+  .drawer {
+    height: 80%;
+  }
 }
